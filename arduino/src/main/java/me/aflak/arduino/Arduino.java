@@ -80,9 +80,16 @@ public class Arduino implements UsbSerialInterface.UsbReadCallback {
     public void unsetArduinoListener() {
         this.listener = null;
     }
+    
+     public static PendingIntent createPendingIntentGetBroadCast(Context context, int id, Intent intent, int flag) {
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+             return PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_IMMUTABLE | flag);
+         else
+             return PendingIntent.getBroadcast(context, id, intent, flag);
+     }
 
     public void open(UsbDevice device) {
-        PendingIntent permissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_DEVICE_PERMISSION), 0);
+        PendingIntent permissionIntent = createPendingIntentGetBroadCast(context, 0, new Intent(ACTION_USB_DEVICE_PERMISSION), 0);
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_USB_DEVICE_PERMISSION);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
